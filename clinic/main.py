@@ -5,23 +5,6 @@ from models import TableDog, TableDogType, TableTimeStamp
 from schemas import Dog, DogType, Timestamp
 from db import SessionLocal
 
-# class DogType(str, Enum):
-#     TERRIER = 'terrier'
-#     BULLDOG = 'bulldog'
-#     DALMATIAN = "dalmatian"
-#
-#
-# class Dog(BaseModel):
-#     pk: int
-#     kind = DogType
-#     name: str
-#
-#
-# class Timestamp(BaseModel):
-#     id: int
-#     timestamp: int
-
-
 app = FastAPI()
 
 
@@ -30,37 +13,44 @@ def get_session():
         return session
 
 
-@app.get("/")
-def root() -> str:
+@app.get("/", response_model=str)
+def root():
     """
     Returns the greeting from the pet clinic
     """
     return 'Welcome to the pet clinic!'
 
 
-@app.post("/post")
-def get_post() -> Timestamp:
+@app.post("/post", response_model=Timestamp)
+def get_post(db: Session = Depends(get_session)):
     now = dt.now()
-    new_timestamp = Timestamp(id=id(now),
-                              timestamp=int(round(now.timestamp())))
-    return new_timestamp  # возвращение запроса на запись в базу
+    new_timestamp = TableTimeStamp(id=id(now) // 100,
+                                   timestamp=int(round(now.timestamp())) // 100)
+    db.add(new_timestamp)
+    db.commit()
+    db.refresh(new_timestamp)
+    return new_timestamp
 
 
 @app.get("/dog", response_model=list[Dog])
-def get_all_dog(limit=10, db: Session = Depends(get_session)):
+def get_all_dog(limit: int = 100, db: Session = Depends(get_session)):
     return db.query(TableDog).limit(limit).all()  # возвращение запроса на получение данных из базы
-#
-#
-# @app.post("/dog")
-# def create_dog(dog: Dog):
-#     return {"name": dog.name, "pk": dog.pk, "kind": dog.kind}
-#
-#
-# @app.get("/dog/{pk}", response_model=Dog)
-# def get_dog_by_id(pk: int):
-#     return {"name": 'string', "pk": 0, "kind": DogType.TERRIER}  # возвращение запроса на получение данных из базы
-#
-#
-# @app.patch("/dog/{pk}, response_model=list[Dog]")
-# def update_dog(pk: int, new_dog: Dog):
-#     return {"name": new_dog.name, "pk": pk, "kind": new_dog.kind}
+
+
+@app.post("/dog", response_model=Dog)
+def create_dog(dog: Dog, db: Session = Depends(get_session)):
+    new_dog = TableDog(pk=dog.pk, name=dog.name, kind=dog.kind)
+    db.add(new_dog)
+    db.commit()
+    db.refresh(new_dog)
+    return new_dog  # отработать вариант, когда уже есть такая собака
+
+
+@app.get("/dog/{pk}", response_model=Dog)
+def get_dog_by_id(pk: int, db: Session = Depends(get_session)):
+    return db.query(TableDog).filter(TableDog.pk == pk).first()  # отработать вариант, если нет такого id
+
+
+@app.patch("/dog/{pk}, response_model=Dog")
+def update_dog(pk: int, new_dog: Dog):  # подумать, как сделать любое количество изменений
+    return {"name": new_dog.name, "pk": pk, "kind": new_dog.kind}

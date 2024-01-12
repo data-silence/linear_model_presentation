@@ -12,7 +12,7 @@ class DogType(str, Enum):
 
 class Dog(BaseModel):
     pk: int
-    kind = DogType
+    kind: DogType
     name: str
 
 

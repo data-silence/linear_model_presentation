@@ -1,4 +1,4 @@
-from sqlalchemy import TIMESTAMP, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import TIMESTAMP, Column, Float, ForeignKey, Integer, String, BigInteger
 # from sqlalchemy.orm import relationship
 from db import Base, SessionLocal
 
@@ -21,5 +21,5 @@ class TableTimeStamp(Base):
     __tablename__ = "timestamp"
     __table_args__ = {"schema": "public"}
 
-    id = Column(Integer, primary_key=True)
-    timestamp = Column(Integer)
+    id = Column(BigInteger, primary_key=True)
+    timestamp = Column(BigInteger)
