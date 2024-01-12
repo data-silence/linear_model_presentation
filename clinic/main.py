@@ -33,7 +33,7 @@ def get_post(db: Session = Depends(get_session)):
 
 
 @app.get("/dog", response_model=list[Dog])
-def get_all_dog(limit: int = 100, db: Session = Depends(get_session)):
+def get_dogs(limit: int = 100, db: Session = Depends(get_session)):
     return db.query(TableDog).limit(limit).all()  # возвращение запроса на получение данных из базы
 
 
@@ -47,10 +47,10 @@ def create_dog(dog: Dog, db: Session = Depends(get_session)):
 
 
 @app.get("/dog/{pk}", response_model=Dog)
-def get_dog_by_id(pk: int, db: Session = Depends(get_session)):
+def get_dog_by_pk(pk: int, db: Session = Depends(get_session)):
     return db.query(TableDog).filter(TableDog.pk == pk).first()  # отработать вариант, если нет такого id
 
 
-@app.patch("/dog/{pk}, response_model=Dog")
+@app.patch("/dog/{pk}", response_model=Dog)
 def update_dog(pk: int, new_dog: Dog):  # подумать, как сделать любое количество изменений
     return {"name": new_dog.name, "pk": pk, "kind": new_dog.kind}

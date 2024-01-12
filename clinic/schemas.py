@@ -4,10 +4,10 @@ from pydantic import BaseModel
 # from typing import Union, Optional
 
 
-class DogType(str, Enum):
-    TERRIER = 'terrier'
-    BULLDOG = 'bulldog'
-    DALMATIAN = "dalmatian"
+class DogType(Enum):
+    TERRIER: str = 'terrier'
+    BULLDOG: str = 'bulldog'
+    DALMATIAN: str = "dalmatian"
 
 
 class Dog(BaseModel):
