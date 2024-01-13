@@ -10,7 +10,8 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-def get_session():
+def get_session() -> None:
+    """Manages connection sessions for working with the database"""
     db = SessionLocal()
     try:
         yield db
