@@ -1,6 +1,5 @@
-from sqlalchemy import TIMESTAMP, Column, Float, ForeignKey, Integer, String, BigInteger
-# from sqlalchemy.orm import relationship
-from db import Base, SessionLocal
+from sqlalchemy import Column, Integer, String, BigInteger
+from db import Base
 
 
 class TableDog(Base):
@@ -8,14 +7,9 @@ class TableDog(Base):
     __table_args__ = {"schema": "public"}
 
     pk = Column(Integer, primary_key=True)
-    kind = Column(String)
-    name = Column(String)
+    kind = Column(String, nullable=False)
+    name = Column(String, nullable=False)
 
-
-class TableDogType(Base):
-    __tablename__ = "dog_type"
-    __table_args__ = {"schema": "public"}
-    kind = Column(String, primary_key=True)
 
 class TableTimeStamp(Base):
     __tablename__ = "timestamp"

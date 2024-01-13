@@ -1,13 +1,10 @@
-from datetime import datetime as dt
 from enum import Enum
 from pydantic import BaseModel
-# from typing import Union, Optional
 
-
-class DogType(Enum):
-    TERRIER: str = 'terrier'
-    BULLDOG: str = 'bulldog'
-    DALMATIAN: str = "dalmatian"
+class DogType(str, Enum):
+    TERRIER = 'terrier'
+    BULLDOG = 'bulldog'
+    DALMATIAN = "dalmatian"
 
 
 class Dog(BaseModel):
